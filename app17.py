@@ -10,12 +10,21 @@ st.set_page_config(layout="wide")
 # 제목 설정
 st.title("비디오 사물 검출 앱")
 
-# 파일 업로드 버튼을 상단으로 이동
+# 모델 파일 업로드
+model_file = st.file_uploader("모델 파일을 업로드하세요", type=["pt"])
+if model_file:
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".pt") as temp_model_file:
+        temp_model_file.write(model_file.read())
+        model_path = temp_model_file.name
+    model = YOLO(model_path)
+    st.success("모델이 성공적으로 로드되었습니다.")
+
+# 비디오 파일 업로드
 uploaded_file = st.file_uploader("비디오 파일을 업로드하세요", type=["mp4", "mov", "avi"])
 
 # 전체 레이아웃을 컨테이너로 감싸기
 with st.container():
-    col1, col2 = st.columns(2)  # 열을 균등하게 분배하여 넓게 표시
+    col1, col2 = st.columns(2)
 
     with col1:
         st.header("원본 영상")
@@ -26,7 +35,6 @@ with st.container():
 
     with col2:
         st.header("사물 검출 결과 영상")
-        # 사물 검출 결과가 나타날 자리 확보 및 고정 높이 회색 박스 스타일 추가
         result_placeholder = st.empty()
         if "processed_video" in st.session_state and st.session_state["processed_video"] is not None:
             result_placeholder.video(st.session_state["processed_video"])
@@ -85,8 +93,8 @@ if st.button("사물 검출 실행") and uploaded_file and model_file:
 
     cap.release()
     out.release()
-    
- # 결과 비디오를 st.session_state에 저장하여 스트림릿에 표시
+
+    # 결과 비디오를 st.session_state에 저장하여 스트림릿에 표시
     st.session_state["processed_video"] = output_path
     result_placeholder.video(output_path)
     st.success("사물 검출이 완료되어 오른쪽에 표시됩니다.")
