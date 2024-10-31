@@ -86,10 +86,10 @@ if st.button("사물 검출 실행") and uploaded_file and model_file:
     cap.release()
     out.release()
 
-    # 결과 비디오를 st.session_state에 저장하여 스트림릿에 표시
-    st.session_state["processed_video"] = output_path
-    result_placeholder.video(output_path)
+# 결과 비디오를 st.session_state에 저장하여 스트림릿에 표시
+st.session_state["processed_video"] = output_path
+result_placeholder.video(output_path)
+st.success("사물 검출이 완료되어 오른쪽에 표시됩니다.")
     st.success("사물 검출이 완료되어 오른쪽에 표시됩니다.")
-        st.success("사물 검출이 완료되어 오른쪽에 표시됩니다.")
-    else:
-        st.warning("사물 검출을 실행하려면 비디오 파일을 업로드하세요.")
+else:
+    st.warning("사물 검출을 실행하려면 비디오 파일을 업로드하세요.")
